@@ -1,0 +1,23 @@
+# Core
+pandas>=2.0
+numpy>=1.24
+SQLAlchemy>=2.0
+openpyxl>=3.1              # Excel tracker read/write
+
+# Database drivers (install the ones you actually use)
+psycopg2-binary>=2.9      # Postgres
+PyMySQL>=1.1              # MySQL/MariaDB
+# pyodbc>=5.0             # SQL Server (needs system ODBC driver)
+
+# Gmail API
+google-api-python-client>=2.0
+google-auth>=2.0
+google-auth-oauthlib>=1.0
+
+# Scheduling
+APScheduler>=3.10
+
+# Dashboard
+streamlit>=1.30
+plotly>=5.18
+streamlit-autorefresh>=1.0   # optional; dashboard degrades gracefully without it

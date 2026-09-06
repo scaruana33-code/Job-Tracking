@@ -1,0 +1,42 @@
+# Runs TWO services from one image:
+#   scheduler  -> pulls data on your cadence, writes back to Excel, emails digest
+#   dashboard  -> Streamlit UI on http://localhost:8501
+#
+#   docker compose up -d --build
+#   docker compose logs -f scheduler
+#
+services:
+  scheduler:
+    build: .
+    image: job-tracker:latest
+    container_name: job-tracker-scheduler
+    command: ["python", "-m", "job_tracker.scheduler"]
+    env_file: .env
+    environment:
+      - TZ=${TZ:-America/New_York}
+    volumes:
+      - ./data:/app/data
+      - ./credentials.json:/app/credentials.json:ro
+    restart: unless-stopped
+
+  dashboard:
+    build: .
+    image: job-tracker:latest
+    container_name: job-tracker-dashboard
+    command:
+      - streamlit
+      - run
+      - job_tracker/dashboard.py
+      - --server.port=8501
+      - --server.address=0.0.0.0
+      - --server.headless=true
+    env_file: .env
+    environment:
+      - TZ=${TZ:-America/New_York}
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - scheduler
+    restart: unless-stopped

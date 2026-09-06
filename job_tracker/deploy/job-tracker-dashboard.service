@@ -1,0 +1,24 @@
+# systemd unit for the Streamlit dashboard (bare-metal, no Docker).
+#   sudo cp deploy/job-tracker-dashboard.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now job-tracker-dashboard
+#   # browse to http://<host>:8501
+[Unit]
+Description=Job-Search Analytics Streamlit dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=stephen
+WorkingDirectory=/opt/job_tracker
+EnvironmentFile=/opt/job_tracker/.env
+ExecStart=/opt/job_tracker/.venv/bin/streamlit run job_tracker/dashboard.py \
+          --server.port=8501 --server.address=0.0.0.0 --server.headless=true
+Restart=on-failure
+RestartSec=15
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
